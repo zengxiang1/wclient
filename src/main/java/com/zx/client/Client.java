@@ -9,10 +9,14 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.zx.client.param.CreateParam;
+import com.zx.client.param.SendParam;
 import com.zx.client.response.WalletAddress;
 import com.zx.client.utils.HttpUtils;
 import com.zx.client.utils.SignUtils;
 import org.apache.commons.codec.digest.DigestUtils;
+
+import java.math.BigDecimal;
+import java.text.MessageFormat;
 
 public class Client {
     private static String url;
@@ -42,7 +46,6 @@ public class Client {
         String sign = SignUtils.getSign(JSON.parseObject(JSON.toJSONString(createParam, new SerializerFeature[]{SerializerFeature.IgnoreNonFieldGetter})), key);
         createParam.setSign(sign);
         String res = "";
-
         try {
             res = HttpUtils.getInstance().executePostWithJson(targetUrl, JSON.toJSONString(createParam));
             JSONObject resObj = JSON.parseObject(res);
@@ -72,6 +75,29 @@ public class Client {
             String sign = DigestUtils.md5Hex(needSignStr);
             System.out.println("最终签名:" + sign);
             return sign.equalsIgnoreCase(paramSign);
+        }
+
+    }
+    public static String send(String coin, String series,String addressType,  String address, BigDecimal amount) throws Exception {
+        String targetUrl = url + "/send";
+        targetUrl = MessageFormat.format(targetUrl, coin);
+        SendParam sendParam = new SendParam();
+        sendParam.setAppId(appId);
+        sendParam.setTime(System.currentTimeMillis()/ 1000);
+        sendParam.setAddress(address);
+        sendParam.setAddressType(addressType);
+        sendParam.setSeries(series);
+        sendParam.setAmount(amount);
+        sendParam.setCoin(coin);
+        String sign = SignUtils.getSign(JSON.parseObject(JSON.toJSONString(sendParam, new SerializerFeature[]{SerializerFeature.IgnoreNonFieldGetter})), key);
+        sendParam.setSign(sign);
+        String res = "";
+        res = HttpUtils.getInstance().executePostWithJson(targetUrl, JSON.toJSONString(sendParam));
+        JSONObject resObj = JSON.parseObject(res);
+        if (resObj.getInteger("code") == 0) {
+            return resObj.getString("data");
+        } else {
+            throw new RuntimeException("发送失败:" + resObj.getString("msg"));
         }
     }
 }
