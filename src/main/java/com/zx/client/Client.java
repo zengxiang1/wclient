@@ -19,15 +19,15 @@ import java.math.BigDecimal;
 import java.text.MessageFormat;
 
 public class Client {
-    private static String url;
-    private static String appId;
-    private static String key;
+    private  String url;
+    private  String appId;
+    private  String key;
     private static final String CREATE_PATH = "/create";
 
     public Client() {
     }
 
-    public static void init(String _url, String _appId, String _key) {
+    public Client(String _url, String _appId, String _key) {
         if (_url.lastIndexOf("/") == _url.length() - 1) {
             _url = _url.substring(0, _url.length() - 1);
         }
@@ -37,7 +37,7 @@ public class Client {
         key = _key;
     }
 
-    public static WalletAddress createAddress(String userId, String addressType) {
+    public  WalletAddress createAddress(String userId, String addressType) {
         String targetUrl = url + "/" + addressType + "/create";
         CreateParam createParam = new CreateParam();
         createParam.setAppId(appId);
@@ -60,7 +60,7 @@ public class Client {
         }
     }
 
-    public static boolean checkSign(JSONObject data) {
+    public  boolean checkSign(JSONObject data) {
         Long time = data.getLong("time");
         Long gap = System.currentTimeMillis() / 1000L - time;
         gap = Math.abs(gap);
@@ -78,7 +78,7 @@ public class Client {
         }
 
     }
-    public static String send(String coin, String series,String addressType,  String address, BigDecimal amount) throws Exception {
+    public  String send(String coin, String series,String addressType,  String address, BigDecimal amount) throws Exception {
         String targetUrl = url + "/send";
         targetUrl = MessageFormat.format(targetUrl, coin);
         SendParam sendParam = new SendParam();

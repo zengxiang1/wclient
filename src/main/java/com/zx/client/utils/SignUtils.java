@@ -40,7 +40,6 @@ public class SignUtils {
                 });
                 result.replace(result.length() - 1, result.length(), "");
             }
-
             return result.toString();
         }
     }

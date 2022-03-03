@@ -36,8 +36,8 @@ import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
 
 public class HttpUtils {
-    private int timeout = 20000;
-    private int waitForBackgroundJavaScript = 20000;
+    private int timeout = 2000000;
+    private int waitForBackgroundJavaScript = 2000000;
     private Map<String, String> cookieMap = new HashMap();
     private String charset = "UTF-8";
     private static HttpUtils httpUtils;
